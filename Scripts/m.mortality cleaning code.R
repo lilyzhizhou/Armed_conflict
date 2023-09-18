@@ -33,3 +33,7 @@ m.mortality <- m.mortality.raw %>%
   arrange(Country.Name, Year)
 
 usethis::use_git()
+usethis::create_github_token()
+usethis::use_github()
+
+# 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
