@@ -1,0 +1,515 @@
+---
+title: "Reproducible workflow"
+format: 
+  revealjs:
+    slide-number: true
+    show-slide-number: all
+editor: source
+bibliography: refs.bib
+---
+
+```{r setup}
+#| echo: true
+#| message: false
+  
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  #fig.width=9, fig.height=3.5, fig.retina=3,
+  fig.retina = 3,
+  #out.height = "100%",
+  cache = FALSE,
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE,
+  hiline = TRUE
+)
+library(here)
+library(emo)
+library(tidyverse)
+library(knitr)
+library(flextable)
+library(texreg)
+library(sjPlot)
+```
+
+## Some definitions {.smaller}
+
+#### Science
+
+> knowledge about the structure and behaviour of the natural and physical world, based on **facts** that you can prove, for example by experiments (Oxford Learner's Dictionary)
+
+#### Research
+
+> a careful study of a subject, especially in order to discover new **facts** or information about it (Oxford Learner's Dictionary)
+
+## Some definitions {.smaller}
+
+#### Science
+
+> knowledge about the structure and behaviour of the natural and physical world, based on **facts** that you can prove, for example by experiments (Oxford Learner's Dictionary)
+
+#### Research
+
+> a careful study of a subject, especially in order to discover new **facts** or information about it (Oxford Learner's Dictionary)
+
+#### AND to **rediscover** new ~~**facts** or information~~ **claims** about it
+
+## Some definitions {.smaller}
+
+#### Science
+
+> knowledge about the structure and behaviour of the natural and physical world, based on **facts** that you can prove, for example by experiments (Oxford Learner's Dictionary)
+
+#### Research
+
+> a careful study of a subject, especially in order to discover new **facts** or information about it (Oxford Learner's Dictionary)
+
+#### AND to **rediscover** new ~~**facts** or information~~ **claims** about it, BUT research is rarely reproduced
+
+> "in the field of cancer research, only about 20--25% or 11% of published studies could be validated or reproduced, and that only about 36% were reproduced in the field of psychology"[@Miyakawa2020]
+
+## Reproducibility crisis in research {.smaller}
+
+::: columns
+::: {.column width="45%"}
+#### Factors contributing to crisis
+
+-   Absence of replication
+
+-   Lack of transparency
+
+-   Data are not generalizable
+
+-   Poor quality of analysis
+
+> "while our ability to generate data has grown dramatically, our ability to understand them has not developed at the same rate"[@Peng2015]
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+```{r, echo = FALSE, out.height = 400}
+articles <- read.csv(here("slides", "data", "reprodarticles.csv"), header = TRUE)
+articles %>%
+  group_by(year) %>%
+  count() %>%
+  ggplot(aes(year, n)) +
+  geom_point(color='#42AB0B', size=2) +
+  geom_line(color='#42AB0B', size=2) +
+  theme_classic(base_size = 12) +
+  labs(title = "Pubmed articles with search term \n('replic' OR 'reproduc') AND 'crisis', 2010-2021", hjust = 0.5,
+       y = "Number of articles", x = "Year of publication")
+```
+:::
+:::
+
+## Reproducibility crisis in research {.smaller}
+
+::: columns
+::: {.column width="35%"}
+#### More factors contributing to crisis
+
+-   Publication bias
+
+-   Pressure to publish
+
+-   Lack of training
+:::
+
+::: {.column width="5%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="60%"}
+```{r}
+#| echo: FALSE
+#| fig.cap: "Fig 2. Percent of participants who perceived each of seven barriers to using reproducible research practices"
+knitr::include_graphics("images/surveyresults.png")
+```
+
+[@Harris2018]
+:::
+:::
+
+## Reproducibile or replicable? {.smaller}
+
+-   Can someone else completely **reproduce** the results, given the data and code?
+
+-   Can someone else **replicate** the analysis using different data?
+
+## The three Rs in research {.smaller}
+
+::: columns
+::: {.column width="45%"}
+```{r}
+#| echo: FALSE
+knitr::include_graphics("images/researchtriangle.png")
+```
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+> "While **replication** is the gold standard for confirming evidence, **reproducibility** requires fewer resources and increases **reliability**" [@Harris2018]
+
+> "Reproducible research can still be wrong" [@Leek2015]
+:::
+:::
+
+## Why make research reproducible {.smaller}
+
+> It's good to repeat and review what is good twice and thrice over. \[Plato\]
+
+::: columns
+::: {.column width="45%"}
+-   For **yourself**
+
+    -   Build on your own work effectively and efficiently
+
+    -   Higher research impact
+
+    -   Produce more reliable research
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+-   For **science**
+
+    -   Standard to judge scientific claims
+
+    -   Encourage replication
+
+    -   Avoid effort duplication
+
+    -   Encourage cumulative knowledge development
+:::
+:::
+
+## How is research presented? {.smaller}
+
+How is research **presented**?
+
+-   Slideshows
+
+-   Journal articles
+
+-   Books
+
+-   Websites
+
+These are ways to **advertise** your research! [@GandrudBook]
+
+## Bridging the gap between research and advertisement {.smaller}
+
+-   Your **research** is the
+
+> "full software environment, code, and data that produced the results" [@Donoho2010]
+
+-   **Research** and **advertisement** should be combined
+
+```{r}
+#| echo: FALSE
+knitr::include_graphics("images/then_now.png")
+```
+
+-   ~~"Data and code can be requested from the first author."~~
+
+## This week {.smaller}
+
+#### We will cover some basic tips to make your research more **reproducible** in `R` and `RStudio`
+
+- Set up your **project**
+
+- **Read in** data 
+
+- Start writing **reproducible** scripts
+
+- Make a GitHub repo
+
+
+## Project from RStudio {.smaller}
+
+#### Create your [project](https://support.rstudio.com/hc/en-us/articles/200526207-Using-RStudio-Projects) in [RStudio](https://www.rstudio.com/)
+
+::: columns
+::: {.column width="45%"}
+- File > New Project > ...
+
+- 
+
+- Create sub-folders to **organize** your project
+
+- Separate folders for
+
+  + code
+  
+  + data
+  
+  + results
+  
+  + presentation files
+  
+  + other documents
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+```{r}
+#| echo: FALSE
+knitr::include_graphics("images/projectfolders.png", dpi=2)
+```
+:::
+:::
+
+Rohan Alexander has a [great example](https://github.com/RohanAlexander/starter_folder) of a nicely laid out R project folder.
+
+
+## Data gathering  {.smaller}
+
+### Read in external data
+
+Are you still doing this?
+
+```{r}
+#| eval: FALSE
+setwd("C:\\Users\\ayami\\Documents\\Talks\\Reproducibility\\data\\raw data")
+repdata <- read.csv("mydata.csv", header = TRUE)
+```
+
+NOT REPRODUCIBLE!!!!!
+
+- Doesn't work on a different machine
+
+- `C:`, `D:`, or `P:`?
+
+- `/`, `\`, or `\\` ?
+
+- Can't output object to a different folder
+
+
+## Data gathering  {.smaller}
+
+### `here` package to the rescue!
+
+```{r}
+#| eval: FALSE
+library(here)
+```
+
+Directory is set to project root folder
+
+```{r}
+here()
+```
+
+Read in data from a sub-folder
+
+```{r}
+#| eval: FALSE
+rawdat <- read.csv(here("data", "raw data", "myrawdata.csv"), header = TRUE)
+```
+
+* Always a good idea to save the raw data in a safe folder
+* Save a copy of cleaned/modified data for analysis
+
+Output results to a different sub-folder
+```{r}
+#| eval: FALSE
+write.csv(cleandat, here("data", "cleandata.csv"), row.names = FALSE)
+```
+
+## Data gathering  {.smaller}
+
+### Or if you have an R project set up, the working directory is automatically the root directory
+
+
+Read in data from a sub-folder
+
+```{r}
+#| eval: FALSE
+rawdat <- read.csv("data\raw data\myrawdata.csv", header = TRUE)
+```
+
+* Always a good idea to save the raw data in a safe folder
+* Save a copy of cleaned/modified data for analysis
+
+Output results to a different sub-folder
+```{r}
+#| eval: FALSE
+write.csv(cleandat, file = "data\cleandata.csv", row.names = FALSE)
+```
+
+
+
+## Data cleaning
+
+### My `create_cleandata.R` script
+
+```{r}
+#| eval: FALSE
+
+#-----------------------------------------------------------------
+# Author: Aya Mitani
+# Last updated: 2021-11-24
+# What: Read in raw data, 
+#         remove incidences with missing data, 
+#         clean var1 and var2 variables, 
+#         write new clean data
+#----------------------------------------------------------------
+
+rawdat <- read.csv(here("data", "raw data", "myrawdata.csv"), 
+                   header = TRUE, na.strings=c(""))
+
+# create new variables, exclude missing observations, 
+# select relevant variables, etc.
+
+# output new data 
+write.csv(cleandat, here("data", "cleandata.csv"), row.names = FALSE) 
+```
+
+
+## Version control  {.smaller}
+
+- In this course, we will implement version control though [Git](https://git-scm.com/) and [GitHub](https://github.com/)
+
+- Git is a version control system that keeps a record of the changes to your files or projects
+  +   We determine when Git takes a snapshop of the file or project
+  +   We include a message along with the snapshop to remind ourselves what changes were made
+  +   We can search and recover past versions of files and projects
+  
+- GitHub offers a friendly platform service to use Git
+
+- Why use version control?
+
+    1. enhances **reproducibility** by making it easier to share code and data (with others and with yourself);
+    2. makes it easier to **collaborate**;
+    3. improves **workflow** by encouraging systematic approaches; 
+    
+## Introduce yourself to Git {.smaller}
+
+### Set your username and commit email address in Git
+Open **Git Bash** (in Windows) or **Terminal** (in Macs) and type
+```{r}
+#| eval: FALSE
+git config --global user.name "My Name"
+git config --global user.email "myemail@email.com"
+```
+
+To confirm
+```{r}
+#| eval: FALSE
+git config --global user.name
+git config --global user.email
+```
+
+Or use the `usethis` package in **R**
+```{r}
+#| eval: FALSE
+install.packages("usethis")
+library(usethis) 
+
+usethis::use_git_config(user.name = "My Name", user.email = "myemail@email.com")
+
+# to confirm, generate a git situation-report, your user name and email should appear under Git config (global)
+usethis::git_sitrep()
+```
+
+## Push to GitHub {.smaller}
+* There are many different ways to create a new repo in GitHub, but as R users, it is easiest to keep using the `usethis` package
+
+#### Initiate and commit the files
+```{r}
+#| eval: FALSE
+usethis::use_git()
+```
+
+#### Push to GitHub
+```{r}
+#| eval: FALSE
+usethis::use_github()
+```
+
+#### This will create the R project folder as a repo in your GitHub account!
+* Go to your GitHub account and find your new repo which has the same name is your R project folder
+
+## After the initial commit {.smaller}
+
+* Once your project is live on GitHub, archive (or even delete) the original project on your machine 
+* After your initial commit, any updates you make should be done using version control
+* I like to create a "Version control" folder on my local machine 
+* When you want to make any changes, copy the HTTPS from your GitHub Repo page
+
+```{r}
+#| echo: FALSE
+knitr::include_graphics("images/gitcopyrepo.png")
+```
+
+## Version control {.smaller}
+
+### Open RStudio
+* *New Project* > *Version Control* > *Git* 
+* Paste HTTPS in *Repository URL*
+* Give a name to the project 
+  + I like to just use the original project name, but you can give it other names, e.g. `myproject_update2023`
+* Enter the directory where you want to put your project
+
+### Make your edits
+* Remember to `check()` before pushing the new edits back onto GitHub
+
+## Version control  {.smaller}
+
+### Pull + Commit + Push
+
+::: columns
+::: {.column width="65%"}
+* When you are ready to push your edits, click on the "Git" tab
+* Click on "Pull" $\downarrow$  
+  + You will likely get the message "Already up to date."
+* Click on "Commit" and open the Git pop-up
+* Check "Staged" box for all files you want to commit
+* Write a Commit message, e.g. "Read in new data"
+* Click on "Commit"
+* Click on "Push" $\uparrow$
+* Refresh your browswer and see the new commit on your GitHub Repo page
+:::
+
+::: {.column width="10%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="25%"}
+```{r}
+knitr::include_graphics("images/gitvc.png")
+knitr::include_graphics("images/gitvc2.png")
+```
+:::
+:::
+
+
+
+
+
+
+
+
+
+## In-class assignment
+
+- Today's in-class assignment is available in the Week 2 Module 
+
+
+
+## References {.smaller}
+
+::: {#refs}
+:::
