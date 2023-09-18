@@ -10,7 +10,7 @@ library(here)
 library(usethis)
 
 here() # sets working directory
-usethis::use_git_config(user.name = "Zhi Lin Zhou", user.email = "lilyzhi.zhou@mail.utoronto.ca")
+#usethis::use_git_config(user.name = "Zhi Lin Zhou", user.email = "lilyzhi.zhou@mail.utoronto.ca")
 
 # read in raw file 
 m.mortality.raw <- read.csv(here("Input","maternalmortality.csv"),header = TRUE)
@@ -32,8 +32,8 @@ m.mortality <- m.mortality.raw %>%
   mutate(Year = as.numeric(Year)) %>% # Make year numeric 
   arrange(Country.Name, Year)
 
-usethis::use_git()
-usethis::create_github_token()
-usethis::use_github()
+#usethis::use_git()
+#usethis::create_github_token()
+#usethis::use_github()
 
 # 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
