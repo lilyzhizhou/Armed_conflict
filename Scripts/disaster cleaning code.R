@@ -10,8 +10,6 @@ library(here)
 library(usethis)
 
 here()
-use_git_config(user.name = "Zhi Lin Zhou", user.email = "lilyzhi.zhou@mail.utoronto.ca")
-
 
 # read in raw file 
 disaster.raw <- read.csv(here("Input","disaster.csv"),header = TRUE)
@@ -38,6 +36,3 @@ disaster <- disaster.raw %>%
  group_by(Year, ISO) %>%
  summarize(drought = sum(drought), earthquake = sum(earthquake))
 
-
-usethis::use_git()
-usethis::use_github()
