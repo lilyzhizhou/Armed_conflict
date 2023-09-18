@@ -37,3 +37,7 @@ disaster <- disaster.raw %>%
 
  group_by(Year, ISO) %>%
  summarize(drought = sum(drought), earthquake = sum(earthquake))
+
+
+usethis::use_git()
+usethis::use_github()
