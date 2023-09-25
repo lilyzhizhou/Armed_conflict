@@ -42,10 +42,11 @@ infant.clean <- clean.data(infant.raw, "infant.mor")
 neonatal.clean <- clean.data(infant.raw, "neo.mor")   
 under5.clean <- clean.data(infant.raw, "under5.mor") 
 
-# Join Data
 
+# Join Data
 list_data <- list(maternal.clean,infant.clean,neonatal.clean,under5.clean)
 merge_data <- reduce(list_data, full_join)
+
 
 # Add Country Code 
 merge_data$ISO <- countrycode(merge_data$Country.Name, 
