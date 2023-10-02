@@ -5,8 +5,10 @@ editor: visual
 ---
 
 ```{r, echo=FALSE}
+source("../.Rprofile")
 here()
 data <- read.csv(here('Output/finaldata.csv'))
+
 head(data)
 ```
 
@@ -22,15 +24,31 @@ data %>%
 
 -   sum has a large amount of NAs
 
--   Maternal mortality has 426 NAs
 
 ```{r}
-fretable <- function(x){
-table(data[,x])
-}
+na_count <- colSums(is.na(data))
 
-fretable('conflict')
-
-
+print(data.frame(Column = names(na_count), NA_Count = na_count))
 
 ```
+
+- mat mortality has large number of NAs (426)
+- all other mortality has 40 NAs
+
+```{r}
+table(data$earthquake)
+table(data$drought)
+```
+
+## Ploting distribution of Continuous Data 
+
+```{r}
+ data %>%
+  ggplot(aes(x = Year, y = sumdeath, group = ISO))+
+  geom_line()+
+  scale_y_log10()
+```
+
+
+
+
