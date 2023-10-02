@@ -1,0 +1,11 @@
+---
+title: "Exploratory Data Analysis"
+format: html
+editor: visual
+---
+
+```{r, echo=FALSE}
+here()
+read.csv('Output/finaldata.csv')
+
+```

@@ -18,9 +18,9 @@ armedconf.raw <- read.csv(here("Input","conflictdata.csv"))
 
 armedconf.clean <- armedconf.raw %>%
   group_by(ISO, year) %>%
-  summarize(sum = sum(best)) %>%
+  summarize(sumdeath = sum(best)) %>%
   ungroup() %>%
-  mutate(conflict = ifelse(sum < 25, 'no','yes')) %>%
+  mutate(conflict = ifelse(sumdeath < 25, 0,1)) %>%
   rename('Year' = 'year')
  
   

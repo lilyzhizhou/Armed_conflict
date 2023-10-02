@@ -21,6 +21,12 @@ lapply(merge_list, FUN = summary)
 
 final.data <- merge_list %>%
   reduce(left_join, by = c('ISO','Year')) %>% # join all the columns together 
+  
+  mutate(drought = replace_na(drought, 0),
+         earthquake = replace_na(earthquake, 0),
+         sumdeath = replace_na(sumdeath, 0),
+         conflict = replace_na(conflict,0)) %>%
+
   subset(select = -c(OECD2023,Country.Name)) # remove duplicate column 
 
 # Check if you have 20 rows of data for each country 
