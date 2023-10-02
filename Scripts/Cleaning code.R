@@ -9,8 +9,8 @@ here() # sets working directory
 #usethis::use_git_config(user.name = "Zhi Lin Zhou", user.email = "lilyzhi.zhou@mail.utoronto.ca")
 
 # read in raw files 
-maternal.raw <- read.csv(here("Input","infantmortality.csv"),header = TRUE)
-infant.raw <- read.csv(here("Input","maternalmortality.csv"),header = TRUE)
+maternal.raw <- read.csv(here("Input","maternalmortality.csv"),header = TRUE)
+infant.raw <- read.csv(here("Input","infantmortality.csv"),header = TRUE)
 neonatal.raw <- read.csv(here("Input","neonatalmortality.csv"),header = TRUE)
 under5.raw <- read.csv(here("Input","under5mortality.csv"),header = TRUE)
 
@@ -34,8 +34,8 @@ under5.raw <- read.csv(here("Input","under5mortality.csv"),header = TRUE)
 
 maternal.clean <- clean.data(maternal.raw, 'mat.mor') 
 infant.clean <- clean.data(infant.raw, "infant.mor") 
-neonatal.clean <- clean.data(infant.raw, "neo.mor")   
-under5.clean <- clean.data(infant.raw, "under5.mor") 
+neonatal.clean <- clean.data(neonatal.raw, "neo.mor")   
+under5.clean <- clean.data(under5.raw, "under5.mor") 
 
 
 # Join Data
