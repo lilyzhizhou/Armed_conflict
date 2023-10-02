@@ -26,6 +26,10 @@ final.data <- merge_list %>%
          earthquake = replace_na(earthquake, 0),
          sumdeath = replace_na(sumdeath, 0),
          conflict = replace_na(conflict,0)) %>%
+  
+  mutate(drought = as.character(drought),
+         earthquake = as.character(earthquake),
+         conflict = as.character(conflict)) %>%
 
   subset(select = -c(OECD2023,Country.Name)) # remove duplicate column 
 

@@ -40,7 +40,7 @@ under5.clean <- clean.data(infant.raw, "under5.mor")
 
 # Join Data
 list_data <- list(maternal.clean,infant.clean,neonatal.clean,under5.clean)
-merge_data <- reduce(list_data, full_join)
+merge_data <- reduce(list_data, full_join, by = c('Country.Name','Year'))
 
 
 # Add Country Code 
@@ -48,7 +48,7 @@ merge_data$ISO <- countrycode(merge_data$Country.Name,
                             origin = "country.name", 
                             destination = "iso3c")
 
-##### Distaster Cleaning data ###########
+##### Disaster Cleaning data ###########
 
 disaster.raw <- read.csv(here("Input","disaster.csv"),header = TRUE)
 
@@ -64,12 +64,15 @@ disaster.clean <- disaster.raw %>%
   
   # c. Create a dummy variable drought and another dummy variable earthquake such that:
   
+  group_by(Year, ISO) %>%
+  
   mutate(drought = ifelse(Disaster.Type == "Drought",1,0),
          earthquake = ifelse(Disaster.Type == "Earthquake",1,0)) %>%
   
   # Notice that some countries that had more than one earthquakes/droughts a year have multiple entries
   # in some years. Use the group_by() and summarize() functions to create a data set where only one
   # row of observation exists for each country and each year, such that:
-  
-  group_by(Year, ISO) %>%
-  summarize(drought = sum(drought), earthquake = sum(earthquake))
+ 
+  summarize(drought = max(drought), 
+            earthquake = max(earthquake)) %>% # keeping these are binary variable yes/no
+  ungroup()

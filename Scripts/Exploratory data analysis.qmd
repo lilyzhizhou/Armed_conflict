@@ -6,6 +6,31 @@ editor: visual
 
 ```{r, echo=FALSE}
 here()
-read.csv('Output/finaldata.csv')
+data <- read.csv(here('Output/finaldata.csv'))
+head(data)
+```
+
+```{r, echo = FALSE}
+tail(data)
+
+```
+
+```{r, echo=FALSE}
+data %>%
+  summary()
+```
+
+-   sum has a large amount of NAs
+
+-   Maternal mortality has 426 NAs
+
+```{r}
+fretable <- function(x){
+table(data[,x])
+}
+
+fretable('conflict')
+
+
 
 ```

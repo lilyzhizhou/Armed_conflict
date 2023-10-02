@@ -21,6 +21,7 @@ armedconf.clean <- armedconf.raw %>%
   summarize(sumdeath = sum(best)) %>%
   ungroup() %>%
   mutate(conflict = ifelse(sumdeath < 25, 0,1)) %>%
+  mutate(year = year +1) %>%
   rename('Year' = 'year')
  
   
