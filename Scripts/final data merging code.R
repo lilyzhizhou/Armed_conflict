@@ -5,10 +5,6 @@
 #
 #----------------------------------------------------------------
 
-library(tidyverse)
-library(here)
-library(usethis)
-
 here() # sets working directory
 
 # Load data
