@@ -5,11 +5,6 @@
 #
 #----------------------------------------------------------------
 
-library(tidyverse)
-library(here)
-library(usethis)
-library(countrycode)
-
 here() # sets working directory
 #usethis::use_git_config(user.name = "Zhi Lin Zhou", user.email = "lilyzhi.zhou@mail.utoronto.ca")
 
@@ -61,7 +56,7 @@ disaster.raw <- read.csv(here("Input","disaster.csv"),header = TRUE)
 # types “Earthquake” and “Drought”
 
 disaster.clean <- disaster.raw %>%
-  filter(Disaster.Type %in% c("Earthquake","Drought") & Year >= 2000 & Year <= 2019) %>%
+  dplyr::filter(Disaster.Type %in% c("Earthquake","Drought") & Year >= 2000 & Year <= 2019) %>%
   
   # b. Subset the data set to only include the following variables: Year, ISO, Disaster.type.
   

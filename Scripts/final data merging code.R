@@ -21,13 +21,13 @@ lapply(merge_list, FUN = summary)
 
 final.data <- merge_list %>%
   reduce(left_join, by = c('ISO','Year')) %>% # join all the columns together 
-  subset(select = -OECD2023) # remove duplicate column 
+  subset(select = -c(OECD2023,Country.Name)) # remove duplicate column 
 
 # Check if you have 20 rows of data for each country 
 
 print(final.data %>%
   group_by(ISO) %>%
-  summarise(Count = n()), n = 186)
+  summarise(Count = n()), n = 186) 
 
 # write csv
 
