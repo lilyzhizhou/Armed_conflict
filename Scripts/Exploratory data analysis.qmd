@@ -20,10 +20,14 @@ tail(data)
 ```{r, echo=FALSE}
 data %>%
   summary()
+
+data <- data %>%
+  mutate(conflict = as.character(conflict),
+         drought = as.character(drought),
+         earthquake = as.character(earthquake))
 ```
 
--   sum has a large amount of NAs
-
+-   mat mor has a lot of NAs
 
 ```{r}
 na_count <- colSums(is.na(data))
@@ -32,22 +36,112 @@ print(data.frame(Column = names(na_count), NA_Count = na_count))
 
 ```
 
-- mat mortality has large number of NAs (426)
-- all other mortality has 40 NAs
+-   mat mortality has large number of NAs (426)
+-   all other mortality has 40 NAs
 
 ```{r}
-table(data$earthquake)
-table(data$drought)
+data %>% count(ISO)
 ```
 
-## Ploting distribution of Continuous Data 
+-   all countries have 20 entries
+
+## Ploting distribution of Continuous Data
+
+-   variables we are interested in are: all mortality variables
+-   conflict variables
+
+### plotting mat mortality
 
 ```{r}
  data %>%
-  ggplot(aes(x = Year, y = sumdeath, group = ISO))+
-  geom_line()+
-  scale_y_log10()
+  ggplot(aes(x = Year, y = mat.mor, group = ISO))+
+  geom_line(color = '#eb9ad3', alpha = 7/10)+
+  scale_y_log10()+
+  ggtitle('maternal mortality')
 ```
+
+-   hard to see any distinct patterns
+
+```{r}
+ data %>%
+  ggplot(aes(x = Year, y = infant.mor, group = ISO))+
+  geom_line(color = '#89CFF0', alpha = 7/10)+
+  scale_y_log10()+
+  ggtitle('infant mortality')
+```
+
+-   looks like overall it's going down
+
+```{r}
+ data %>%
+  ggplot(aes(x = Year, y = neo.mor, group = ISO))+
+  geom_line(color = '#cbbdf2')+
+  scale_y_log10()+
+  ggtitle('neonatal mortality')
+```
+
+-   looks to also be decreasing slightly
+
+```{r}
+ data %>%
+  ggplot(aes(x = Year, y = under5.mor, group = ISO))+
+  geom_line(color = '#a1efcf')+
+  scale_y_log10()+
+  ggtitle('Under 5 mortality')
+```
+
+-   looks to be decreasing over years
+
+### How many countries have conflict?
+
+```{r}
+data %>%
+  ggplot(aes(conflict))+
+  geom_bar()+
+  ggtitle('conflict')
+```
+
+## Which Countries have conflict? 
+```{r}
+data %>%
+  group_by(country_name, conflict) %>%
+  summarize(sumcon = sum(conflict == 1)) %>%
+  dplyr::filter(conflict == 1) %>%
+  arrange(sumcon) %>%
+  print(data)
+
+```
+- most countries only had a few years where conflict occured 
+
+### group mortality by conflict 
+```{r}
+data %>%
+  ggplot(aes(x = conflict, y = mat.mor, fill = conflict))+
+  geom_violin()+
+  ggtitle('maternal mortality grouped by country conflict')
+```
+- countries with no conflict have lower rates of maternal mortality 
+
+```{r}
+data %>%
+  ggplot(aes(x = conflict, y = infant.mor, fill = conflict))+
+  geom_violin()+
+  ggtitle('infant mortality grouped by country conflict')
+```
+
+```{r}
+data %>%
+  ggplot(aes(x = conflict, y = neo.mor, fill = conflict))+
+  geom_violin()+
+  ggtitle('neonatal mortality grouped by country conflict')
+```
+```{r}
+data %>%
+  ggplot(aes(x = conflict, y = under5.mor, fill = conflict))+
+  geom_violin()+
+  ggtitle('infant mortality grouped by country conflict')
+```
+
 
 
 
