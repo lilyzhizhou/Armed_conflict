@@ -101,7 +101,8 @@ data %>%
   ggtitle('conflict')
 ```
 
-## Which Countries have conflict? 
+## Which Countries have conflict?
+
 ```{r}
 data %>%
   group_by(country_name, conflict) %>%
@@ -111,16 +112,19 @@ data %>%
   print(data)
 
 ```
-- most countries only had a few years where conflict occured 
 
-### group mortality by conflict 
+-   most countries only had a few years where conflict occured
+
+### group mortality by conflict
+
 ```{r}
 data %>%
   ggplot(aes(x = conflict, y = mat.mor, fill = conflict))+
   geom_violin()+
   ggtitle('maternal mortality grouped by country conflict')
 ```
-- countries with no conflict have lower rates of maternal mortality 
+
+-   countries with no conflict have lower rates of maternal mortality
 
 ```{r}
 data %>%
@@ -135,14 +139,10 @@ data %>%
   geom_violin()+
   ggtitle('neonatal mortality grouped by country conflict')
 ```
+
 ```{r}
 data %>%
   ggplot(aes(x = conflict, y = under5.mor, fill = conflict))+
   geom_violin()+
   ggtitle('infant mortality grouped by country conflict')
 ```
-
-
-
-
-
