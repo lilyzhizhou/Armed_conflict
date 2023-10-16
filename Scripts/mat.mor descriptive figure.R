@@ -27,4 +27,6 @@ data %>%
   dplyr::filter(ISO %in% poscountries) %>%
   ggplot(aes(x = Year, y = mat.mor, color = ISO, group = ISO))+
   geom_line()+
-  ggtitle('Maternal mortality')
+  scale_y_log10()+
+  ggtitle('Maternal mortality')+
+  ylab("Sum Maternal Mortality")
