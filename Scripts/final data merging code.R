@@ -31,7 +31,7 @@ final.data <- merge_list %>%
          earthquake = as.character(earthquake),
          conflict = as.character(conflict)) %>%
 
-  subset(select = -c(OECD2023,Country.Name)) # remove duplicate column 
+  subset(select = -c(Country.Name)) # remove duplicate column 
 
 # Check if you have 20 rows of data for each country 
 
