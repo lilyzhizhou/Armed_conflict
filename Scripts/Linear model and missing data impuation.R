@@ -91,3 +91,20 @@ complete.data.multi2 <- complete(mice.multi.out, "all")
 head(complete.data.multi2$`1`, n=20)
 
 sum(is.na(complete.data.multi2)) # no na data 
+
+
+#########################
+## Re-Run Linear Model ##
+#########################
+
+preds2 <- as.formula("~ ISO_num + as.factor(Year) + GDP + popdens + OECD + 
+                    urban + agedep + male_edu + temp + conflict + drought + earthquake")
+
+mat.mor.lm2 <- lm(update.formula(preds2, mat.mor ~ .), data = complete.data.multi2$`1`)
+infant.mor.lm2 <- lm(update.formula(preds2, mat.mor ~.), data = complete.data.multi2$`1`)
+neo.mor.lm2 <- lm(update.formula(preds2, neo.mor ~.), data = complete.data.multi2$`1`)
+under5.mor.lm2 <- lm(update.formula(preds2, under5.mor ~.), data = complete.data.multi2$`1`)
+
+screenreg(list(mat.mor.lm2, under5.mor.lm2, infant.mor.lm2, neo.mor.lm2),
+          ci.force = TRUE,
+          caption = 'Results from linear regression models')
