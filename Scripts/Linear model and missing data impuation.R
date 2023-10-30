@@ -82,7 +82,7 @@ mice.multi.out  <- mice(data_imp, seed = 100, m = 10, maxit = 5,
 
 save(mice.multi.out, file = "miceout.Rda")
 
-load("miceout.Rda")
+load("Output/miceout.Rda")
 plot(mice.multi.out)
 
 # Check imputed values 
@@ -97,14 +97,31 @@ sum(is.na(complete.data.multi2)) # no na data
 ## Re-Run Linear Model ##
 #########################
 
-preds2 <- as.formula("~ ISO_num + as.factor(Year) + GDP + popdens + OECD + 
-                    urban + agedep + male_edu + temp + conflict + drought + earthquake")
+## fit analysis model and pool results
+mat.mor.lm2 <- with(mice.multi.out, 
+                   model1 <- lm( mat.mor ~ ISO_num + as.factor(Year) + GDP + popdens + OECD + 
+                                   urban + agedep + male_edu + temp + conflict + drought + earthquake, 
+                                 scale.fix = TRUE,
+                                 corstr = "ar1"))
+summary(pool(mat.mor.lm2))
 
-mat.mor.lm2 <- lm(update.formula(preds2, mat.mor ~ .), data = complete.data.multi2$`1`)
-infant.mor.lm2 <- lm(update.formula(preds2, mat.mor ~.), data = complete.data.multi2$`1`)
-neo.mor.lm2 <- lm(update.formula(preds2, neo.mor ~.), data = complete.data.multi2$`1`)
-under5.mor.lm2 <- lm(update.formula(preds2, under5.mor ~.), data = complete.data.multi2$`1`)
+infant.mor.lm2 <- with(mice.multi.out, 
+                    model1 <- lm(infant.mor ~ ISO_num + as.factor(Year) + GDP + popdens + OECD + 
+                                    urban + agedep + male_edu + temp + conflict + drought + earthquake, 
+                                  scale.fix = TRUE,
+                                  corstr = "ar1"))
+summary(pool(infant.mor.lm2))
 
-screenreg(list(mat.mor.lm2, under5.mor.lm2, infant.mor.lm2, neo.mor.lm2),
-          ci.force = TRUE,
-          caption = 'Results from linear regression models')
+neo.mor.lm2 <- with(mice.multi.out, 
+                    model1 <- lm( neo.mor ~ ISO_num + as.factor(Year) + GDP + popdens + OECD + 
+                                    urban + agedep + male_edu + temp + conflict + drought + earthquake, 
+                                  scale.fix = TRUE,
+                                  corstr = "ar1"))
+summary(pool(neo.mor.lm2))
+
+under5.mor.lm2 <- with(mice.multi.out, 
+                    model1 <- lm( under5.mor ~ ISO_num + as.factor(Year) + GDP + popdens + OECD + 
+                                    urban + agedep + male_edu + temp + conflict + drought + earthquake, 
+                                  scale.fix = TRUE,
+                                  corstr = "ar1"))
+summary(pool(under5.mor.lm2))
