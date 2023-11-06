@@ -83,9 +83,14 @@ reslong <- results %>%
 
 
 # Plot figures
-plot <- ggplot(reslong, aes(x = alpha1, y = edr, color = factor(model))) +
+plot <- ggplot(reslong, aes(x = alpha1, y = edr, color = factor(model),
+                            linetype = as.factor(pz), shapre = as.factor(pz),
+                            group = interaction(model,pz))) +
   geom_point() +
   geom_line()+
-  facet_grid(alpha0~sample_size)
+  scale_color_discrete(labels=c('Adjusted','Unadjusted'))+
+  facet_grid(alpha0~sample_size, labeller = label_parsed) + 
+  geom_hline(yintercept = 0.05, color= 'grey', linetype = 'longdash' )
+  
 
 plot
