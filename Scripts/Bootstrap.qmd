@@ -1,0 +1,78 @@
+---
+title: "Bootstrap"
+format: html
+editor: visual
+---
+
+```{r}
+#-----------------------------------------------------------------
+# Author: Zhi Lin Zhou
+# Last updated: 2023-11-13
+# What: Run bootstrappping to calculate median difference 
+#
+#----------------------------------------------------------------
+library(here)
+library(tidyverse)
+
+here() # sets working directory
+#usethis::use_git_config(user.name = "Zhi Lin Zhou", user.email = "lilyzhi.zhou@mail.utoronto.ca")
+
+data <- read.csv(here("Output","finaldata.csv"))
+
+#Create a table (in HTML or PDF) that shows the differences in median (with the BCa bootstrap 95% confidence intervals) 
+  # maternal, infant, neonatal, and under-5 mortality between the
+  # countries exposed to versus not exposed to armed conflict for the year 2017.
+
+# filter dataset 
+data2017 <- data %>%
+  dplyr:: filter(Year == 2017) %>%
+  select(ISO, conflict, mat.mor, infant.mor, neo.mor, under5.mor)
+  
+
+# Calculate median difference 
+# Bootstrap
+
+library(boot)
+
+getmeddiff <- function(data, indices, var) {
+  sample_data <- data[indices, ]
+  group_meds <- tapply(sample_data[,var], sample_data$conflict, FUN = median, na.rm = T)
+  meddiff <- group_meds[2] - group_meds[1]
+  return(meddiff)
+}
+
+bootout_matmor <- boot(data2017, statistic = getmeddiff, strata = data2017$conflict, R = 1000, var = 'mat.mor')
+bootout_infantmor <- boot(data2017, statistic = getmeddiff, strata = data2017$conflict, R = 1000, var = 'infant.mor')
+bootout_neomor <- boot(data2017, statistic = getmeddiff, strata = data2017$conflict, R = 1000, var = 'neo.mor')
+bootout_u5mor <- boot(data2017, statistic = getmeddiff, strata = data2017$conflict, R = 1000, var = 'under5.mor')
+
+
+matmor_ci <- boot.ci(boot.out = bootout_matmor, conf = 0.95, type = c("bca"))
+infantmor_ci <- boot.ci(boot.out = bootout_infantmor, conf = 0.95, type = c("bca"))
+neomor_ci <- boot.ci(boot.out = bootout_neomor, conf = 0.95, type = c("bca"))
+u5mor_ci <- boot.ci(boot.out = bootout_u5mor, conf = 0.95, type = c("bca"))
+
+
+# Make table 
+data_table <- data.frame(
+  Mortality_Group = c('maternal','infant','neonatal','under 5'),
+  Median_Difference = c(bootout_matmor$t0, bootout_infantmor$t0, bootout_neomor$t0, bootout_u5mor$t0),
+  Confidence_internal_lower = c(matmor_ci$bca[4], infantmor_ci$bca[4], neomor_ci$bca[4], u5mor_ci$bca[4]),
+  Confidence_internal_upper = c(matmor_ci$bca[5], infantmor_ci$bca[5], neomor_ci$bca[5], u5mor_ci$bca[5]),
+  n = c(sum(!is.na(data2017$mat.mor)), sum(!is.na(data2017$infant.mor)), 
+        sum(!is.na(data2017$neo.mor)), sum(!is.na(data2017$under5.mor))))
+
+print(data_table)
+
+library(flextable)
+
+table <- flextable(data_table) 
+
+table <- add_header_row(
+  x = table, values = c("Median Difference in Mortality for Conflicts with Armed Conflict in 2017"),
+  colwidths = c(5))
+table <- theme_box(table)
+
+table
+
+```
